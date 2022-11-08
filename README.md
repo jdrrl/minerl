@@ -1,94 +1,30 @@
-# The [MineRL](http://minerl.io) Python Package
+# MineRL Fork
 
-[![Documentation Status](https://readthedocs.org/projects/minerl/badge/?version=latest)](https://minerl.readthedocs.io/en/latest/?badge=latest)
-[![Dev Build status](https://badge.buildkite.com/0717cd35b9a708f0b4ac0b2858eec9ca7d08f6768868d3ac08.svg?branch=dev)](https://buildkite.com/openai-mono/minerl-public-dev)
-[![Downloads](https://pepy.tech/badge/minerl)](https://pepy.tech/project/minerl)
-[![PyPI version](https://badge.fury.io/py/minerl.svg)](https://badge.fury.io/py/minerl)
-[!["Open Issues"](https://img.shields.io/github/issues-raw/minerllabs/minerl.svg)](https://github.com/minerllabs/minerl/issues)
-[![GitHub issues by-label](https://img.shields.io/github/issues/minerllabs/minerl/bug.svg?color=red)](https://github.com/minerllabs/minerl/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Discord](https://img.shields.io/discord/565639094860775436.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/BT9uegr)
+This is a fork of MineRL v0.4.4, the last version that is still based on Malmo
+and therefore comes with abstract crafting and smelting actions.
 
+## Modifications
 
-Python package providing easy to use gym environments and a simple data api for the MineRLv0 dataset. 
+- Remove the hardcoded brightness value in Malmo source code to allow changing
+  the brightness in `options.txt`.
+- Modified defaults in `options.txt` to remove visual artifacts during
+  sprinting, reduce visual effects and simulation distance, and increase the
+  brightness to 5.0 used for official speed runs.
 
-**To [get started please read the docs here](http://minerl.io/docs/)!**
+## Useful files
 
-![](http://www.minerl.io/docs/_images/demo.gif)
+- **[`mc.py`](https://github.com/danijar/minerl/blob/main/minerl/herobraine/hero/mc.py)**
+  contains important constants, including the list of all item names.
+- **[`options.txt`](https://github.com/danijar/minerl/blob/main/minerl/Malmo/Minecraft/run/options.txt)**
+  allows changing Minecraft [game options](https://minecraft.fandom.com/wiki/Options.txt).
+
 ## Installation
 
-With JDK-8 installed run this command
 ```
-pip3 install --upgrade minerl
+apt-get install -y libgl1-mesa-dev
+apt-get install -y libx11-6
+apt-get install -y openjdk-8-jdk
+apt-get install -y x11-xserver-utils
+apt-get install -y xvfb
+pip install git+https://github.com/danijar/minerl.git@87ca0e3
 ```
-
-## Basic Usage
-
-Running an environment:
-```python
-import minerl
-import gym
-env = gym.make('MineRLNavigateDense-v0')
-
-
-obs = env.reset()
-
-done = False
-while not done:
-    action = env.action_space.sample() 
- 
-    # One can also take a no_op action with
-    # action =env.action_space.noop()
-    
- 
-    obs, reward, done, info = env.step(
-        action)
-
-```
-
-Sampling the dataset:
-
-```python
-import minerl
-
-# YOU ONLY NEED TO DO THIS ONCE!
-minerl.data.download('/your/local/path')
-
-data = minerl.data.make(
-    'MineRLObtainDiamond-v0',
-    data_dir='/your/local/path')
-
-# Iterate through a single epoch gathering sequences of at most 32 steps
-for current_state, action, reward, next_state, done \
-    in data.batch_iter(
-        num_epochs=1, seq_len=32):
-
-        # Print the POV @ the first step of the sequence
-        print(current_state['pov'][0])
-
-        # Print the final reward pf the sequence!
-        print(reward[-1])
-
-        # Check if final (next_state) is terminal.
-        print(done[-1])
-
-        # ... do something with the data.
-        print("At the end of trajectories the length"
-              "can be < max_sequence_len", len(reward))
-```
-
-
-Visualizing the dataset:
-
-![viewer|540x272](http://www.minerl.io/docs/_images/cropped_viewer.gif)
-```bash
-
-# Make sure your MINERL_DATA_ROOT is set!
-export MINERL_DATA_ROOT='/your/local/path'
-
-# Visualizes a random trajectory of MineRLObtainDiamondDense-v0
-python3 -m minerl.viewer MineRLObtainDiamondDense-v0
-
-```
-
-## MineRL Competition
-If you're here for the MineRL competition. Please check [the main competition website here](https://www.aicrowd.com/challenges/neurips-2021-minerl-competition).
