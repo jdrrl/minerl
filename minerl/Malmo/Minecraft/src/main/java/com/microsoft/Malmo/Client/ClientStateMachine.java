@@ -1,15 +1,15 @@
 // --------------------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Microsoft Corporation
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 //  associated documentation files (the "Software"), to deal in the Software without restriction,
 //  including without limitation the rights to use, copy, modify, merge, publish, distribute,
 //  sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all copies or
 //  substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
 //  NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 //  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
@@ -188,11 +188,11 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
         {
             this.reservationID = "";
             ClientStateMachine.this.getScreenHelper().clearFragment(INFO_RESERVE_STATUS);
-        }            
+        }
     }
 
     protected TCPSocketChannel getMissionControlSocket() { return this.missionControlSocket; }
-    
+
     protected void createMissionControlSocket()
     {
         TCPUtils.LogSection ls = new TCPUtils.LogSection("Creating MissionControlSocket");
@@ -274,7 +274,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
 
     /**
      * Create the episode object for the requested state.
-     * 
+     *
      * @param state the state the mod is entering
      * @return a MissionStateEpisode that localises all the logic required to run this state
      */
@@ -424,7 +424,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
      * This is called during the initialisation episode, but also needs to be
      * available for other episodes in case the configuration changes, resulting
      * in changes to the ports.
-     * 
+     *
      * @throws UnknownHostException
      */
     protected void initialiseComms() throws UnknownHostException
@@ -485,7 +485,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                 String findServerPrefix = "MALMO_FIND_SERVER";
                 String cancelRequestCommand = "MALMO_CANCEL_REQUEST";
                 String killClientCommand = "MALMO_KILL_CLIENT";
-                
+
                 if (command.startsWith(reservePrefix))
                 {
                     // Reservation request.
@@ -624,8 +624,8 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
             // Start up new "Env" service instead of Malmo AgentHost api.
             System.out.println("***** Start MalmoEnvServer on port " + AddressHelper.getMissionControlPortOverride());
             this.envServer = new MalmoEnvServer(
-                Loader.instance().activeModContainer().getVersion(), 
-                AddressHelper.getMissionControlPortOverride(), 
+                Loader.instance().activeModContainer().getVersion(),
+                AddressHelper.getMissionControlPortOverride(),
                 this.missionPoller,
                 this.inputController);
             Thread thread = new Thread("MalmoEnvServer") {
@@ -1117,7 +1117,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
 
             List<AgentSection> agents = currentMissionInit().getMission().getAgentSection();
             boolean completedWithErrors = false;
-            
+
             if (agents.size() > 1 && currentMissionInit().getClientRole() != 0)
             {
                 // We are waiting to join an out-of-process server. Need to pay attention to what happens -
@@ -1190,7 +1190,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                 this.waitingForPlayer = false;
             }
         }
-        
+
         protected void handleLan()
         {
             // Get our name from the Mission:
@@ -1223,7 +1223,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                             serv.getPlayerList().setGameType(GameType.SURVIVAL);
                             serv.getPlayerList().setCommandsAllowedForAll(true);
                             serv.mc.player.setPermissionLevel(true ? 4 : 0);
-                            
+
                             serv.getPlayerList().maxPlayers = hc.getMaxPlayers() + 1; //TODO: for multi-agent add more.
                             portStr = i + "";
 
@@ -1316,7 +1316,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                 currentMissionBehaviour().addExtraHandlers(handlers);
             this.waitingForChunk = true;
         }
-        
+
         private void proceed()
         {
             // The server is ready, so send our MissionInit back to the agent and go!
@@ -1585,13 +1585,13 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
 
             // We need to make sure that both the client and server have paused,
             // otherwise we are still susceptible to the "Holder Lookups" hang.
-            
+
             // Since the server sets its pause state in response to the client's pause state,
             // and it only performs this check once, at the top of its tick method,
             // to be sure that the server has had time to set the flag correctly we need to make sure
             // that at least one server tick method has *started* since the flag was set.
             // We can't do this by catching the onServerTick events, since we don't receive them when the game is paused.
-            
+
             // The following code makes use of the fact that the server both locks and empties the server's futureQueue,
             // every time through the server tick method.
             // This locking means that if the client - which needs to wait on the lock -
@@ -1873,8 +1873,10 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                 currentMissionBehaviour().performanceProducer.prepare(currentMissionInit());
 
             // Force brightness setting
-            Minecraft.getMinecraft().gameSettings.gammaSetting = (float) 2.0;
-            
+            // TODO: We disable this line so that gamma can be modified in
+            // optoins.txt.
+            // Minecraft.getMinecraft().gameSettings.gammaSetting = (float) 2.0;
+
             // Disable the gui for the episode!
             Minecraft.getMinecraft().gameSettings.hideGUI = true;
 
@@ -1974,7 +1976,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
             for (VideoHook hook : this.videoHooks)
                 hook.stop(ClientStateMachine.this.missionEndedData);
 
-            
+
             // Disable the gui for the episode!
             Minecraft.getMinecraft().gameSettings.hideGUI = false;
 
@@ -2032,7 +2034,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                     // Connection has been lost.
                     onMissionEnded(ClientState.ERROR_LOST_NETWORK_CONNECTION, "Client was kicked from server - ", false);
                 }
-    
+
             }
 
             // Check we are still in touch with the agent:
@@ -2070,14 +2072,14 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                     this.quitCode = MalmoMod.VIDEO_UNRESPONSIVE_CODE;
                 }
             }
-            
+
             if(Minecraft.getMinecraft().world == null){
                 if(this.serverHasFiredStartingPistol){
-                    onMissionEnded(ClientState.ERROR_NO_WORLD, "No world for client. Must be in main menu");  
+                    onMissionEnded(ClientState.ERROR_NO_WORLD, "No world for client. Must be in main menu");
                 }
 
-                return;   
-            
+                return;
+
             }
             // Check here to see whether the player has died or not:
             if (!this.playerDied && Minecraft.getMinecraft().player.isDead)
@@ -2092,12 +2094,12 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
             // before the server manages to *start*.
             // (This has potentially disastrous effects for the state machine, and is easy to reproduce by,
             // for example, setting the start point and goal of the mission to the same coordinates.)
-            
+
             // To guard against this happening, although we are running, we don't act on anything -
             // we don't check for commands, or send observations or rewards - until we get the SERVER_GO signal,
             // which is sent once the server's running episode has started.
 
-            
+
             TimeHelper.SyncManager.setPistolFired(this.serverHasFiredStartingPistol);
             if (!this.serverHasFiredStartingPistol){
                 return;
@@ -2108,7 +2110,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                 checkForControlCommand();
             }
             if (phase == Phase.END)
-            {   
+            {
 
 
                 // Check whether or not we want to quit:
@@ -2159,13 +2161,13 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                 }
                 else
                 {
-                    // If in the case that we are asynchronous, do this 
+                    // If in the case that we are asynchronous, do this
                     // wack stuff of checking input at the end of a tick...
                     if(!synchronous){
 
                         checkForControlCommand();
                     }
-                    
+
                     // Send off observation and reward data:
                     // And see if we have any incoming commands to act upon:
                     sendData(false);
@@ -2247,7 +2249,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
             }
             Minecraft.getMinecraft().mcProfiler.endSection(); //malmotcp
             Minecraft.getMinecraft().mcProfiler.startSection("malmoGatherRewardSignal");
-            
+
             // Now create the reward signal:
             if (currentMissionBehaviour() != null && currentMissionBehaviour().rewardProducer != null && cac != null)
             {
@@ -2352,7 +2354,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
 
         /**
          * Attempt to handle a command string by passing it to our various external controllers in turn.
-         * 
+         *
          * @param command the command string to be handled.
          * @return true if the command was handled.
          */
@@ -2388,7 +2390,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                     currentMissionBehaviour().rewardProducer.getReward(currentMissionInit(), ClientStateMachine.this.finalReward);
 
                 this.serverWantsToEndMission = true;
-                
+
             }
             else if (messageType == MalmoMessageType.SERVER_GO)
             {
@@ -2497,7 +2499,7 @@ public class ClientStateMachine extends StateMachine implements IMalmoMessageLis
                 if (ClientStateMachine.this.missionQuitCode != null && ClientStateMachine.this.missionQuitCode.equals(MalmoMod.AGENT_DEAD_QUIT_CODE))
                     missionEnded.setStatus(MissionResult.PLAYER_DIED); // Need to do this manually.
                 missionEnded.setHumanReadableStatus(report);
-                
+
                 // TODO: WE HAVE TO MOVE THIS TO THE onMISSIONENDED of Client Mission
                 // BECAUSE IT WOULD TAKE AN EXTRA TICK TO HAVE THIS APPEAR PROPERLY.
                 // THIS MOVE IS INCOMPATIBLE WITH MULTIPLE AGENTS AND REWARD DISTRIBUTION
